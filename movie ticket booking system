@@ -1,0 +1,511 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPlB9lx/uinjbTUKs3Y8Czu",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/JANGAMBALACHANDRAMOHANREDDY/-AI-Code-Debugger/blob/main/movie%20ticket%20booking%20system\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 24,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "BDsVk2-L3P89",
+        "outputId": "16f389e8-a642-4564-94b2-0f51a32c0c78"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Reading package lists... Done\n",
+            "Building dependency tree... Done\n",
+            "Reading state information... Done\n",
+            "openjdk-11-jdk is already the newest version (11.0.27+6~us1-0ubuntu1~22.04).\n",
+            "0 upgraded, 0 newly installed, 0 to remove and 35 not upgraded.\n"
+          ]
+        }
+      ],
+      "source": [
+        "!apt-get install openjdk-11-jdk -y\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile HelloWorld.java\n",
+        "public class HelloWorld {\n",
+        "    public static void main(String[] args) {\n",
+        "        System.out.println(\"Hello, World from Colab!\");\n",
+        "    }\n",
+        "}\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "MEmn-8bQ3bpU",
+        "outputId": "dbb6177a-d997-4476-af03-85b6abd6c80e"
+      },
+      "execution_count": 25,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Overwriting HelloWorld.java\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!javac HelloWorld.java\n"
+      ],
+      "metadata": {
+        "id": "QyoQkCuI3eHl"
+      },
+      "execution_count": 26,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile MovieTicketBooking.java\n",
+        "// (Paste the code above here)\n"
+      ],
+      "metadata": {
+        "id": "ChRdT-Kg3iVw"
+      },
+      "execution_count": 26,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!java HelloWorld\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "22QvwRiW3hAB",
+        "outputId": "53c3cba7-33d3-4b8e-9480-85443e4345c4"
+      },
+      "execution_count": 27,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Hello, World from Colab!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile MovieTicketBooking.java\n",
+        "import java.util.*;\n",
+        "import java.time.LocalDateTime;\n",
+        "import java.time.format.DateTimeFormatter;\n",
+        "\n",
+        "public class MovieTicketBooking {\n",
+        "    static Scanner sc = new Scanner(System.in);\n",
+        "    static List<String> movies = new ArrayList<>(Arrays.asList(\"Avengers\", \"Inception\", \"Interstellar\"));\n",
+        "    static Map<String, List<Booking>> bookings = new HashMap<>();\n",
+        "    static Map<String, Integer> seats = new HashMap<>();\n",
+        "    static final int DEFAULT_SEATS = 5;\n",
+        "    static final String ADMIN_PASSWORD = \"admin123\";\n",
+        "\n",
+        "    public static void main(String[] args) {\n",
+        "        for (String movie : movies) {\n",
+        "            seats.put(movie, DEFAULT_SEATS);\n",
+        "        }\n",
+        "\n",
+        "        System.out.println(\"Welcome to the Movie Ticket Booking System!\");\n",
+        "        while (true) {\n",
+        "            System.out.println(\"\\n1. View Movies\\n2. Book Ticket(s)\\n3. View Bookings\\n4. Cancel Booking\\n5. Admin Login\\n6. Exit\");\n",
+        "            int choice = getValidatedIntegerInput(\"Enter your choice: \", 1, 6);\n",
+        "\n",
+        "            switch (choice) {\n",
+        "                case 1:\n",
+        "                    viewMovies();\n",
+        "                    break;\n",
+        "                case 2:\n",
+        "                    bookTickets();\n",
+        "                    break;\n",
+        "                case 3:\n",
+        "                    viewBookings();\n",
+        "                    break;\n",
+        "                case 4:\n",
+        "                    cancelBooking();\n",
+        "                    break;\n",
+        "                case 5:\n",
+        "                    adminLogin();\n",
+        "                    break;\n",
+        "                case 6:\n",
+        "                    System.out.println(\"Thank you for using the system!\");\n",
+        "                    return;\n",
+        "            }\n",
+        "        }\n",
+        "    }\n",
+        "\n",
+        "    static void viewMovies() {\n",
+        "        System.out.println(\"Available Movies (Seats Left):\");\n",
+        "        for (int i = 0; i < movies.size(); i++) {\n",
+        "            String movie = movies.get(i);\n",
+        "            System.out.println((i + 1) + \". \" + movie + \" (\" + seats.get(movie) + \" seats left)\");\n",
+        "        }\n",
+        "    }\n",
+        "\n",
+        "    static void bookTickets() {\n",
+        "        if (movies.isEmpty()) {\n",
+        "            System.out.println(\"No movies available to book.\");\n",
+        "            return;\n",
+        "        }\n",
+        "        viewMovies();\n",
+        "        int movieNum = getValidatedIntegerInput(\"Enter movie number to book: \", 1, movies.size());\n",
+        "        String movie = movies.get(movieNum - 1);\n",
+        "\n",
+        "        System.out.print(\"Enter your name: \");\n",
+        "        String name = getValidatedName();\n",
+        "\n",
+        "        int available = seats.get(movie);\n",
+        "        int numTickets = getValidatedIntegerInput(\n",
+        "            \"How many tickets do you want to book? \", 1, available);\n",
+        "\n",
+        "        bookings.putIfAbsent(name, new ArrayList<>());\n",
+        "        LocalDateTime now = LocalDateTime.now();\n",
+        "        for (int i = 0; i < numTickets; i++) {\n",
+        "            bookings.get(name).add(new Booking(movie, now));\n",
+        "        }\n",
+        "        seats.put(movie, available - numTickets);\n",
+        "\n",
+        "        System.out.println(\"Booked \" + numTickets + \" ticket(s) for \" + name + \" to watch \" + movie + \"!\");\n",
+        "    }\n",
+        "\n",
+        "    static void viewBookings() {\n",
+        "        System.out.print(\"Enter your name to view bookings: \");\n",
+        "        String name = getValidatedName();\n",
+        "        List<Booking> userBookings = bookings.get(name);\n",
+        "        if (userBookings == null || userBookings.isEmpty()) {\n",
+        "            System.out.println(\"No bookings found for \" + name + \".\");\n",
+        "        } else {\n",
+        "            System.out.println(\"Bookings for \" + name + \":\");\n",
+        "            for (Booking b : userBookings) {\n",
+        "                System.out.println(\" - \" + b);\n",
+        "            }\n",
+        "        }\n",
+        "    }\n",
+        "\n",
+        "    static void cancelBooking() {\n",
+        "        System.out.print(\"Enter your name to cancel booking: \");\n",
+        "        String name = getValidatedName();\n",
+        "        List<Booking> userBookings = bookings.get(name);\n",
+        "\n",
+        "        if (userBookings == null || userBookings.isEmpty()) {\n",
+        "            System.out.println(\"No bookings found for \" + name + \".\");\n",
+        "            return;\n",
+        "        }\n",
+        "\n",
+        "        System.out.println(\"Your bookings: \");\n",
+        "        for (int i = 0; i < userBookings.size(); i++) {\n",
+        "            System.out.println((i + 1) + \". \" + userBookings.get(i));\n",
+        "        }\n",
+        "\n",
+        "        int cancelNum = getValidatedIntegerInput(\n",
+        "            \"Enter the number of the booking to cancel: \", 1, userBookings.size());\n",
+        "\n",
+        "        Booking canceledBooking = userBookings.remove(cancelNum - 1);\n",
+        "        seats.put(canceledBooking.movie, seats.get(canceledBooking.movie) + 1);\n",
+        "\n",
+        "        System.out.println(\"Booking for \\\"\" + canceledBooking.movie + \"\\\" canceled for \" + name + \".\");\n",
+        "\n",
+        "        if (userBookings.isEmpty()) {\n",
+        "            bookings.remove(name);\n",
+        "        }\n",
+        "    }\n",
+        "\n",
+        "    // --- Admin Features ---\n",
+        "\n",
+        "    static void adminLogin() {\n",
+        "        System.out.print(\"Enter admin password: \");\n",
+        "        String pwd = sc.nextLine();\n",
+        "        if (!pwd.equals(ADMIN_PASSWORD)) {\n",
+        "            System.out.println(\"Incorrect password. Returning to main menu.\");\n",
+        "            return;\n",
+        "        }\n",
+        "        while (true) {\n",
+        "            System.out.println(\"\\n--- Admin Menu ---\");\n",
+        "            System.out.println(\"1. Add Movie\\n2. Remove Movie\\n3. Reset Seats\\n4. View All Bookings\\n5. Exit Admin Menu\");\n",
+        "            int adminChoice = getValidatedIntegerInput(\"Enter your choice: \", 1, 5);\n",
+        "            switch (adminChoice) {\n",
+        "                case 1:\n",
+        "                    addMovie();\n",
+        "                    break;\n",
+        "                case 2:\n",
+        "                    removeMovie();\n",
+        "                    break;\n",
+        "                case 3:\n",
+        "                    resetSeats();\n",
+        "                    break;\n",
+        "                case 4:\n",
+        "                    viewAllBookings();\n",
+        "                    break;\n",
+        "                case 5:\n",
+        "                    return;\n",
+        "            }\n",
+        "        }\n",
+        "    }\n",
+        "\n",
+        "    static void addMovie() {\n",
+        "        System.out.print(\"Enter new movie name: \");\n",
+        "        String movie = sc.nextLine().trim();\n",
+        "        if (movie.isEmpty()) {\n",
+        "            System.out.println(\"Movie name cannot be empty.\");\n",
+        "            return;\n",
+        "        }\n",
+        "        if (movies.contains(movie)) {\n",
+        "            System.out.println(\"Movie already exists.\");\n",
+        "            return;\n",
+        "        }\n",
+        "        movies.add(movie);\n",
+        "        seats.put(movie, DEFAULT_SEATS);\n",
+        "        System.out.println(\"Movie \\\"\" + movie + \"\\\" added with \" + DEFAULT_SEATS + \" seats.\");\n",
+        "    }\n",
+        "\n",
+        "    static void removeMovie() {\n",
+        "        viewMovies();\n",
+        "        int movieNum = getValidatedIntegerInput(\"Enter movie number to remove: \", 1, movies.size());\n",
+        "        String movie = movies.remove(movieNum - 1);\n",
+        "        seats.remove(movie);\n",
+        "        // Remove all bookings for this movie\n",
+        "        for (List<Booking> userBookings : bookings.values()) {\n",
+        "            userBookings.removeIf(b -> b.movie.equals(movie));\n",
+        "        }\n",
+        "        System.out.println(\"Movie \\\"\" + movie + \"\\\" removed from the list.\");\n",
+        "    }\n",
+        "\n",
+        "    static void resetSeats() {\n",
+        "        viewMovies();\n",
+        "        int movieNum = getValidatedIntegerInput(\"Enter movie number to reset seats: \", 1, movies.size());\n",
+        "        String movie = movies.get(movieNum - 1);\n",
+        "        seats.put(movie, DEFAULT_SEATS);\n",
+        "        System.out.println(\"Seats for \\\"\" + movie + \"\\\" reset to \" + DEFAULT_SEATS + \".\");\n",
+        "    }\n",
+        "\n",
+        "    static void viewAllBookings() {\n",
+        "        if (bookings.isEmpty()) {\n",
+        "            System.out.println(\"No bookings found.\");\n",
+        "            return;\n",
+        "        }\n",
+        "        System.out.println(\"--- All Bookings ---\");\n",
+        "        for (String name : bookings.keySet()) {\n",
+        "            System.out.println(name + \":\");\n",
+        "            for (Booking b : bookings.get(name)) {\n",
+        "                System.out.println(\" - \" + b);\n",
+        "            }\n",
+        "        }\n",
+        "    }\n",
+        "\n",
+        "    // --- Helper Methods ---\n",
+        "\n",
+        "    static int getValidatedIntegerInput(String prompt, int min, int max) {\n",
+        "        int input = -1;\n",
+        "        while (true) {\n",
+        "            System.out.print(prompt);\n",
+        "            String line = sc.nextLine();\n",
+        "            try {\n",
+        "                input = Integer.parseInt(line);\n",
+        "                if (input < min || input > max) {\n",
+        "                    System.out.println(\"Please enter a number between \" + min + \" and \" + max + \".\");\n",
+        "                } else {\n",
+        "                    break;\n",
+        "                }\n",
+        "            } catch (NumberFormatException e) {\n",
+        "                System.out.println(\"Invalid input. Please enter a valid number.\");\n",
+        "            }\n",
+        "        }\n",
+        "        return input;\n",
+        "    }\n",
+        "\n",
+        "    static String getValidatedName() {\n",
+        "        String name;\n",
+        "        while (true) {\n",
+        "            name = sc.nextLine().trim();\n",
+        "            if (name.isEmpty()) {\n",
+        "                System.out.print(\"Name cannot be empty. Please enter your name: \");\n",
+        "            } else {\n",
+        "                break;\n",
+        "            }\n",
+        "        }\n",
+        "        return name;\n",
+        "    }\n",
+        "}\n",
+        "\n",
+        "// Booking class to hold movie and booking time\n",
+        "class Booking {\n",
+        "    String movie;\n",
+        "    LocalDateTime time;\n",
+        "\n",
+        "    Booking(String movie, LocalDateTime time) {\n",
+        "        this.movie = movie;\n",
+        "        this.time = time;\n",
+        "    }\n",
+        "\n",
+        "    @Override\n",
+        "    public String toString() {\n",
+        "        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm\");\n",
+        "        return movie + \" (Booked on: \" + time.format(formatter) + \")\";\n",
+        "    }\n",
+        "}\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "zbXX4gNO3vl5",
+        "outputId": "182535d3-8874-4797-9ab1-912dec57b88c"
+      },
+      "execution_count": 47,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Overwriting MovieTicketBooking.java\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!javac MovieTicketBooking.java\n"
+      ],
+      "metadata": {
+        "id": "wh7ZdyGv30ir"
+      },
+      "execution_count": 50,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!javac MovieTicketBooking.java\n"
+      ],
+      "metadata": {
+        "id": "21T72jnQ32XN"
+      },
+      "execution_count": 49,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!java MovieTicketBooking\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "RSHIHUcJ5buV",
+        "outputId": "14955e38-a88a-4835-e7ff-a9a454a19849"
+      },
+      "execution_count": 51,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Welcome to the Movie Ticket Booking System!\n",
+            "\n",
+            "1. View Movies\n",
+            "2. Book Ticket(s)\n",
+            "3. View Bookings\n",
+            "4. Cancel Booking\n",
+            "5. Admin Login\n",
+            "6. Exit\n",
+            "Enter your choice: 5\n",
+            "Enter admin password: admin123\n",
+            "\n",
+            "--- Admin Menu ---\n",
+            "1. Add Movie\n",
+            "2. Remove Movie\n",
+            "3. Reset Seats\n",
+            "4. View All Bookings\n",
+            "5. Exit Admin Menu\n",
+            "Enter your choice: 3\n",
+            "Available Movies (Seats Left):\n",
+            "1. Avengers (5 seats left)\n",
+            "2. Inception (5 seats left)\n",
+            "3. Interstellar (5 seats left)\n",
+            "Enter movie number to reset seats: 1\n",
+            "Seats for \"Avengers\" reset to 5.\n",
+            "\n",
+            "--- Admin Menu ---\n",
+            "1. Add Movie\n",
+            "2. Remove Movie\n",
+            "3. Reset Seats\n",
+            "4. View All Bookings\n",
+            "5. Exit Admin Menu\n",
+            "Enter your choice: 4\n",
+            "No bookings found.\n",
+            "\n",
+            "--- Admin Menu ---\n",
+            "1. Add Movie\n",
+            "2. Remove Movie\n",
+            "3. Reset Seats\n",
+            "4. View All Bookings\n",
+            "5. Exit Admin Menu\n",
+            "Enter your choice: 5\n",
+            "\n",
+            "1. View Movies\n",
+            "2. Book Ticket(s)\n",
+            "3. View Bookings\n",
+            "4. Cancel Booking\n",
+            "5. Admin Login\n",
+            "6. Exit\n",
+            "Enter your choice: 6\n",
+            "Thank you for using the system!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "AjSyMTBRCfk2"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
